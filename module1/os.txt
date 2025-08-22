@@ -1,0 +1,29 @@
+what is os?
+An Operating System (OS) is the fundamental software that manages a computer's hardware and software resources and provides common services for computer programs. It acts as an intermediary between the user and the computer, allowing users to interact with the system and run applications. Examples of operating systems include Windows, Linux, macOS, Android, and iOS. 
+
+The purpose of an operating system (OS) is to act as an intermediary between the computer's hardware and the user, providing a user-friendly environment for running applications and managing computer resources. It essentially manages the computer's hardware and software, making it easier for users to interact with the system and run programs. 
+
+Here's a more detailed breakdown:
+Resource Management:
+The OS manages hardware resources like the CPU, memory, storage, and input/output devices. It allocates these resources to different applications and ensures they are used efficiently and without conflicts.
+
+User Interface:
+The OS provides a user interface (either command-line or graphical) that allows users to interact with the computer and its applications. 
+
+Application Management:
+The OS manages the execution of applications, allowing users to run, switch between, and close programs. 
+
+File Management:
+The OS manages files and directories, enabling users to store, retrieve, and organize data. 
+Hardware Abstraction:
+
+The OS hides the complexities of the underlying hardware from the user and application programs, presenting a simplified view of the system. 
+
+Error Handling:
+The OS detects and handles errors that may occur during program execution or hardware operation.
+
+Security:
+The OS provides security features to protect the system from unauthorized access and malicious software. 
+
+In essence, the OS makes it possible for users to perform various tasks on a computer without needing to understand the intricacies of the underlying hardware and software. 
+

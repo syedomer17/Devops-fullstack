@@ -1,0 +1,5 @@
+linux commands:
+
+1.clear (it is use to clear the screen)
+2.pwd (persent working directory)
+3.whoami (tells the user name of the linux user)
