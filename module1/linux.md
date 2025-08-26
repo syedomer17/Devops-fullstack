@@ -374,8 +374,6 @@ $ rmdir -i myFolder
 rmdir: remove directory 'myFolder'? y
 ```
 
----
-
 ## 📌 Linux Commands (Files + Navigation)
 
 ---
