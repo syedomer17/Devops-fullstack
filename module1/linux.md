@@ -376,8 +376,6 @@ rmdir: remove directory 'myFolder'? y
 
 ## 📌 Linux Commands (Files + Navigation)
 
----
-
 ### 24. `touch filename.extension`
 
 **Use:** Creates an empty file.
