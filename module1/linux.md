@@ -376,3 +376,207 @@ rmdir: remove directory 'myFolder'? y
 
 ---
 
+## 📌 Linux Commands (Files + Navigation)
+
+---
+
+### 24. `touch filename.extension`
+
+**Use:** Creates an empty file.
+
+```bash
+$ touch notes.txt
+```
+
+**Output:**
+👉 No message. File created.
+
+```bash
+$ ls
+notes.txt
+```
+
+---
+
+### 25. `cat > filename.extension`
+
+**Use:** Create a new file and directly write data into it (overwrites existing content). End with **CTRL+C**.
+
+```bash
+$ cat > story.txt
+This is my first line.
+This is my second line.
+^C
+```
+
+**Output:**
+👉 File saved with content.
+
+---
+
+### 26. `cat filename`
+
+**Use:** Read contents of a file.
+
+```bash
+$ cat story.txt
+```
+
+**Output:**
+
+```
+This is my first line.
+This is my second line.
+```
+
+---
+
+### 27. `cat >> filename`
+
+**Use:** Append (add) more data to an existing file.
+
+```bash
+$ cat >> story.txt
+This is my third line.
+^C
+```
+
+```bash
+$ cat story.txt
+```
+
+**Output:**
+
+```
+This is my first line.
+This is my second line.
+This is my third line.
+```
+
+---
+
+### 28. `nano filename`
+
+**Use:** Open a text editor to create or edit a file. Save with **CTRL+O + Enter**, Exit with **CTRL+X**.
+
+```bash
+$ nano story.txt
+```
+
+**Output (inside editor):**
+
+```
+GNU nano 6.2               story.txt
+This is my first line.
+This is my second line.
+This is my third line.
+```
+
+---
+
+### 29. `cd` (Change Directory)
+
+**Use:** Moves into another directory.
+
+```bash
+$ cd Documents
+$ pwd
+/home/omar/Documents
+```
+
+---
+
+### 30. `cd ..`
+
+**Use:** Go back one directory (parent).
+
+```bash
+$ cd ..
+$ pwd
+/home/omar
+```
+
+👉 **Relative path example:**
+
+```bash
+$ cd home/omar/projects
+```
+
+---
+
+### 31. `sudo su`
+
+**Use:** Become the root user (superuser). Needs password.
+
+```bash
+$ sudo su
+[sudo] password for omar:
+```
+
+**Output:**
+
+```
+root@omar-Laptop:/home/omar#
+```
+
+👉 After this, many commands don’t need `sudo`.
+
+---
+
+### 32. `rm filename`
+
+**Use:** Delete a file.
+
+```bash
+$ rm notes.txt
+```
+
+**Output:**
+👉 File deleted silently (no confirmation by default).
+
+👉 To delete multiple files:
+
+```bash
+$ rm file1.txt file2.txt
+```
+
+---
+
+### 33. `rm -i filename`
+
+**Use:** Interactive delete (asks before removing).
+
+```bash
+$ rm -i story.txt
+rm: remove regular file 'story.txt'? y
+```
+
+---
+
+### 34. `mv`
+
+**Use:** Move or rename files/directories.
+
+1️⃣ **Rename a file:**
+
+```bash
+$ mv story.txt myStory.txt
+```
+
+2️⃣ **Move file to another directory:**
+
+```bash
+$ mv myStory.txt Documents/
+```
+
+3️⃣ **Rename and move:**
+
+```bash
+$ mv myStory.txt Documents/newStory.txt
+```
+
+**Output:**
+👉 File moved/renamed, no extra message.
+
+---
+
