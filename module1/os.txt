@@ -27,3 +27,4 @@ The OS provides security features to protect the system from unauthorized access
 
 In essence, the OS makes it possible for users to perform various tasks on a computer without needing to understand the intricacies of the underlying hardware and software. 
 
+net-tools
