@@ -576,3 +576,368 @@ $ mv myStory.txt Documents/newStory.txt
 
 ---
 
+# 📌 cp and grep commands in Linux(ubuntu):
+
+---
+
+### 35. `cp filename newFileName`
+
+**Use:** Copy files.
+
+```bash
+$ cp notes.txt notes_backup.txt
+```
+
+**Output:**
+👉 A new copy is created.
+
+```bash
+$ ls
+notes.txt  notes_backup.txt
+```
+
+---
+
+### 36. `cp -r directoryName newDirName`
+
+**Use:** Copy an entire directory (empty or with files).
+
+```bash
+$ cp -r projects projects_backup
+```
+
+**Output:**
+👉 Copies the whole `projects` folder to `projects_backup`.
+
+**Extra example – Copy specific extensions:**
+
+```bash
+$ cp folder/*.txt backup/
+```
+
+👉 Copies all `.txt` files to `backup/`.
+
+---
+
+### 37. `grep "text" filename`
+
+**Use:** Search for a specific word/text (case-sensitive).
+
+```bash
+$ grep "Hello" story.txt
+```
+
+**Output:**
+
+```
+Hello World from Linux
+```
+
+---
+
+### 38. `grep -i "text" filename`
+
+**Use:** Case-insensitive search.
+
+```bash
+$ grep -i "hello" story.txt
+```
+
+**Output:**
+
+```
+Hello World from Linux
+hello everyone
+```
+
+---
+
+### 39. `grep -in "text" filename`
+
+**Use:** Search with line numbers (case-insensitive).
+
+```bash
+$ grep -in "hello" story.txt
+```
+
+**Output:**
+
+```
+1:Hello World from Linux
+3:hello everyone
+```
+
+---
+
+### 40. `grep -v "text" filename`
+
+**Use:** Show all lines **except** those containing the given text.
+
+```bash
+$ grep -v "hello" story.txt
+```
+
+**Output:**
+
+```
+This is line two
+Linux is powerful
+```
+
+---
+
+### 41. `grep -e "text1" -e "text2" filename`
+
+**Use:** Search for multiple patterns.
+
+```bash
+$ grep -e "Linux" -e "World" story.txt
+```
+
+**Output:**
+
+```
+Hello World from Linux
+Linux is powerful
+```
+
+---
+
+### 42. `egrep "(word1|word2)" filename`
+
+**Use:** Extended regex search (multiple matches).
+
+```bash
+$ egrep "(Hyderabad|Mumbai)" cities.txt
+```
+
+**Output:**
+
+```
+Hyderabad
+Mumbai
+```
+
+---
+
+### 43. `grep "^letter" filename`
+
+**Use:** Find lines starting with a given letter/word.
+
+```bash
+$ grep "^H" story.txt
+```
+
+**Output:**
+
+```
+Hello World from Linux
+Hi there
+```
+
+---
+
+### 44. `grep "letter$" filename`
+
+**Use:** Find lines ending with a given letter/word.
+
+```bash
+$ grep "Linux$" story.txt
+```
+
+**Output:**
+
+```
+Hello World from Linux
+```
+
+---
+
+### 45. `fgrep "text" filename`
+
+**Use:** Search for exact string (no regex interpretation).
+👉 Faster than `grep` when you don’t want regex.
+
+```bash
+$ fgrep "a.b" data.txt
+```
+
+**Output:**
+👉 Finds only exact `"a.b"`, not regex meaning (`a` followed by any char and `b`).
+
+---
+
+### 46. `wc filename` (Word Count)
+
+**Use:** Counts **lines, words, and characters**.
+
+```bash
+$ wc story.txt
+```
+
+**Output:**
+
+```
+  3   15   80 story.txt
+```
+
+👉 (lines, words, bytes).
+
+---
+
+### 47. `wc -l filename`
+
+**Use:** Show only line count.
+
+```bash
+$ wc -l story.txt
+```
+
+**Output:**
+
+```
+3 story.txt
+```
+
+**Also:**
+
+```bash
+$ wc -w story.txt   # word count
+$ wc -c story.txt   # character count
+```
+
+---
+
+### 48. `wc -c filename`
+
+**Use:** Show only character/byte count.
+
+```bash
+$ wc -c story.txt
+```
+
+**Output:**
+
+```
+80 story.txt
+```
+
+---
+
+### 49. `uniq filename`
+
+**Use:** Removes duplicate lines (consecutive only).
+
+```bash
+$ cat data.txt
+apple
+apple
+banana
+banana
+orange
+```
+
+```bash
+$ uniq data.txt
+apple
+banana
+orange
+```
+
+---
+
+### 50. `sort filename`
+
+**Use:** Sort lines alphabetically.
+
+```bash
+$ cat fruits.txt
+banana
+apple
+orange
+```
+
+```bash
+$ sort fruits.txt
+apple
+banana
+orange
+```
+
+---
+
+### 51. `sort filename > newFilename`
+
+**Use:** Save sorted output into a new file.
+
+```bash
+$ sort fruits.txt > sorted_fruits.txt
+$ cat sorted_fruits.txt
+apple
+banana
+orange
+```
+
+👉 You can then run `uniq` on it.
+
+---
+
+### 52. `uniq -d filename`
+
+**Use:** Show only duplicate lines.
+
+```bash
+$ cat data.txt
+apple
+apple
+banana
+orange
+orange
+```
+
+```bash
+$ uniq -d data.txt
+apple
+orange
+```
+
+---
+
+### 53. `sort -n filename`
+
+**Use:** Sort numbers (instead of alphabetically).
+
+```bash
+$ cat numbers.txt
+10
+2
+30
+5
+```
+
+```bash
+$ sort -n numbers.txt
+2
+5
+10
+30
+```
+
+---
+
+# 📌 GREP Family Quick Summary
+
+| Command                   | Use                      | Example                           | Output                           |                  |            |
+| ------------------------- | ------------------------ | --------------------------------- | -------------------------------- | ---------------- | ---------- |
+| `grep "text" file`        | Case-sensitive search    | `grep "Hello" file.txt`           | Matches `Hello`                  |                  |            |
+| `grep -i "text" file`     | Case-insensitive         | `grep -i "hello" file.txt`        | Matches `Hello` and `hello`      |                  |            |
+| `grep -n "text" file`     | Show line numbers        | `grep -n "Linux" file.txt`        | `2:Linux is cool`                |                  |            |
+| `grep -v "text" file`     | Invert match (exclude)   | `grep -v "Linux" file.txt`        | All lines without `Linux`        |                  |            |
+| `grep -e "a" -e "b" file` | Multiple patterns        | `grep -e "dog" -e "cat" file.txt` | Finds both                       |                  |            |
+| \`egrep "(a               | b)" file\`               | Regex OR search                   | \`egrep "(dog                    | cat)" file.txt\` | Finds both |
+| `grep "^word" file`       | Lines starting with word | `grep "^Hi" file.txt`             | Matches lines starting with `Hi` |                  |            |
+| `grep "word$" file`       | Lines ending with word   | `grep "end$" file.txt`            | Matches lines ending with `end`  |                  |            |
+| `fgrep "a.b" file`        | Exact match (no regex)   | `fgrep "a.b" file.txt`            | Finds only literal `a.b`         |                  |            |
+
+---
+
