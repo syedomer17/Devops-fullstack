@@ -941,3 +941,473 @@ $ sort -n numbers.txt
 
 ---
 
+Perfect 🚀 Now we’re moving into **file preview (head/tail), process management (ps, kill, top, jobs), redirection (>, xargs), and priority (nice)**.
+I’ll continue like before — **explanation + multiple examples (3–4 each) + outputs**.
+
+---
+
+# 📌 head tail top etc 
+
+---
+
+### 54. `head filename`
+
+**Use:** Displays the **first 10 lines** of a file.
+
+**Examples:**
+
+```bash
+$ head story.txt
+```
+
+Output → First 10 lines.
+
+```bash
+$ head /etc/passwd
+```
+
+Output → Shows first 10 system users.
+
+```bash
+$ head numbers.txt
+```
+
+Output → First 10 numbers.
+
+---
+
+### 55. `head -5 filename`
+
+**Use:** Displays the **first 5 lines**.
+
+**Examples:**
+
+```bash
+$ head -5 story.txt
+```
+
+Output → Only 5 lines.
+
+```bash
+$ head -5 /etc/passwd
+```
+
+Output → First 5 users.
+
+```bash
+$ head -5 log.txt
+```
+
+Output → First 5 log entries.
+
+---
+
+### 56. `tail filename`
+
+**Use:** Displays the **last 10 lines**.
+
+**Examples:**
+
+```bash
+$ tail story.txt
+```
+
+Output → Last 10 lines of story.
+
+```bash
+$ tail /etc/passwd
+```
+
+Output → Last 10 users.
+
+```bash
+$ tail log.txt
+```
+
+Output → Last 10 logs.
+
+---
+
+### 57. `tail -5 filename`
+
+**Use:** Displays the **last 5 lines**.
+
+**Examples:**
+
+```bash
+$ tail -5 story.txt
+```
+
+Output → Last 5 lines.
+
+```bash
+$ tail -5 log.txt
+```
+
+Output → Last 5 logs.
+
+```bash
+$ tail -5 numbers.txt
+```
+
+Output → Last 5 numbers.
+
+---
+
+### 58. `head -20 filename | tail -5`
+
+**Use:** Show **lines 16–20** (head first 20 → tail last 5).
+
+**Examples:**
+
+```bash
+$ head -20 story.txt | tail -5
+```
+
+Output → Lines 16–20.
+
+```bash
+$ head -50 log.txt | tail -10
+```
+
+Output → Lines 41–50.
+
+```bash
+$ head -20 story.txt | tail -5 | tee newfile.txt
+```
+
+Output → Saves those 5 lines to `newfile.txt` and also prints on screen.
+
+---
+
+### 59. `ls -l > newfilename`
+
+**Use:** Redirects directory listing into a file.
+
+**Examples:**
+
+```bash
+$ ls -l > files.txt
+```
+
+👉 Creates `files.txt` with list of files.
+
+```bash
+$ ls -l /etc > etc_list.txt
+```
+
+👉 Save `/etc` list.
+
+```bash
+$ ls -l Documents > doc_list.txt
+```
+
+👉 Save Documents list.
+
+---
+
+### 60. `cat unwanted.txt | xargs rm`
+
+**Use:** Deletes files listed in another file.
+
+**Examples:**
+
+```bash
+$ cat unwanted.txt
+temp1.txt
+temp2.txt
+
+$ cat unwanted.txt | xargs rm
+```
+
+👉 Deletes both files.
+
+```bash
+$ ls *.log > deleteLogs.txt
+$ cat deleteLogs.txt | xargs rm
+```
+
+👉 Deletes all `.log` files.
+
+```bash
+$ cat files.txt | xargs rm -i
+```
+
+👉 Interactive delete for safety.
+
+---
+
+### 61. `ps`
+
+**Use:** Show processes of current shell.
+
+**Examples:**
+
+```bash
+$ ps
+```
+
+Output:
+
+```
+ PID TTY          TIME CMD
+1234 pts/0    00:00:00 bash
+1256 pts/0    00:00:00 ps
+```
+
+```bash
+$ sleep 60 &
+$ ps
+```
+
+Output shows `sleep` process.
+
+```bash
+$ ps | grep bash
+```
+
+👉 Filters only bash process.
+
+---
+
+### 62. `kill <pid>`
+
+**Use:** Kill a process by PID.
+
+**Examples:**
+
+```bash
+$ sleep 500 &
+[1] 2345
+$ kill 2345
+```
+
+```bash
+$ ps
+$ kill -9 3000
+```
+
+👉 Force kill process.
+
+```bash
+$ kill $(pidof firefox)
+```
+
+👉 Kill Firefox.
+
+---
+
+### 63. `ps -f`
+
+**Use:** Show processes in **full format**.
+
+**Examples:**
+
+```bash
+$ ps -f
+```
+
+Output includes UID, PID, PPID, CMD.
+
+```bash
+$ ps -f | grep bash
+```
+
+```bash
+$ sleep 60 &
+$ ps -f | grep sleep
+```
+
+---
+
+### 64. `ps -ef`
+
+**Use:** Show **all processes** in system (full listing).
+
+**Examples:**
+
+```bash
+$ ps -ef
+```
+
+```bash
+$ ps -ef | grep root
+```
+
+```bash
+$ ps -ef | wc -l
+```
+
+👉 Count processes.
+
+---
+
+### 65. `sleep seconds`
+
+**Use:** Pause execution for some time.
+
+**Examples:**
+
+```bash
+$ sleep 10
+```
+
+👉 Sleeps 10s.
+
+```bash
+$ sleep 120
+```
+
+👉 Sleeps 2 min.
+
+```bash
+$ sleep 5 && echo "done"
+```
+
+👉 Waits 5s then prints `done`.
+
+---
+
+### 66. `sleep 120 & ps -f`
+
+**Use:** Run sleep in background (`&`) and then check process.
+
+**Examples:**
+
+```bash
+$ sleep 120 &
+[1] 3210
+$ ps -f | grep sleep
+```
+
+```bash
+$ sleep 60 & sleep 30 &
+$ ps -f | grep sleep
+```
+
+```bash
+$ sleep 15 & echo "started in background"
+```
+
+---
+
+### 67. `nohup command`
+
+**Use:** Run command immune to hangups (keeps running even after logout).
+
+**Examples:**
+
+```bash
+$ nohup sleep 500 &
+```
+
+👉 Keeps running even if you close terminal.
+
+```bash
+$ nohup mysqldump testdb -u root -p > dump.sql &
+```
+
+👉 Backup database safely.
+
+```bash
+$ nohup python script.py > log.txt &
+```
+
+---
+
+### 68. `top`
+
+**Use:** Real-time process monitor.
+
+**Examples:**
+
+```bash
+$ top
+```
+
+👉 Shows CPU, memory usage.
+
+```bash
+$ top -u omar
+```
+
+👉 Only processes for user.
+
+```bash
+$ top -p 1234
+```
+
+👉 Show specific PID.
+
+---
+
+### 69. `ps -aux`
+
+**Use:** Show all processes with CPU/memory usage.
+
+**Examples:**
+
+```bash
+$ ps -aux
+```
+
+```bash
+$ ps -aux | grep firefox
+```
+
+```bash
+$ ps -aux --sort=-%mem | head -5
+```
+
+👉 Top 5 memory hogs.
+
+---
+
+### 70. `jobs`
+
+**Use:** Show background jobs in current shell.
+
+**Examples:**
+
+```bash
+$ sleep 50 &
+$ jobs
+```
+
+Output → `[1]+ Running sleep 50 &`
+
+```bash
+$ sleep 20 &
+$ jobs
+```
+
+```bash
+$ jobs -l
+```
+
+👉 Shows PID also.
+
+---
+
+### 71. `nice -n value command`
+
+**Use:** Run a command with **priority** (-20 = highest, 19 = lowest).
+
+**Examples:**
+
+```bash
+$ nice -n 5 sleep 100 &
+```
+
+```bash
+$ nice -n -1 python heavy_script.py
+```
+
+```bash
+$ ps -l | grep python
+```
+
+👉 Shows NI (nice value).
+
+---
+
