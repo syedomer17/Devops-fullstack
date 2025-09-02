@@ -1411,3 +1411,297 @@ $ ps -l | grep python
 
 ---
 
+Perfect 💯 Omer, now you’re covering **echo, variables, package management, users, permissions** — this is golden because these are the building blocks of shell scripting + system admin.
+
+I’ll continue in the same **format (explanation + examples + outputs)** so it becomes your **Linux Handbook (Part 4)**.
+
+---
+
+# 📌 Linux Commands chmod and wget (curl)
+
+---
+
+### 72. `echo "your content"`
+
+**Use:** Prints text to terminal.
+
+**Examples:**
+
+```bash
+$ echo "Hello Linux"
+Hello Linux
+
+$ echo "Welcome Omer"
+Welcome Omer
+```
+
+---
+
+### 73. `echo -e "some content \t here"`
+
+**Use:** `-e` enables escape sequences like `\t` (tab), `\n` (new line).
+
+**Examples:**
+
+```bash
+$ echo -e "Omer\tAli"
+Omer    Ali
+
+$ echo -e "Line1\nLine2"
+Line1
+Line2
+```
+
+---
+
+### 74. Variables in Ubuntu
+
+Linux **doesn’t require datatypes**. Just assign with `=`.
+Use `$` to print values.
+
+**Examples:**
+
+```bash
+$ x=10
+$ echo $x
+10
+
+$ greet="good evening"
+$ echo "Hi Omer $greet"
+Hi Omer good evening
+```
+
+⚠ Always use **double quotes ("")** when referencing variables, not single quotes ('').
+
+---
+
+### 75. `echo "$USERNAME"`
+
+**Use:** Prints current system username.
+
+```bash
+$ echo "$USERNAME"
+omer
+```
+
+---
+
+### 76. `echo $?`
+
+**Use:** Shows exit status of last command.
+
+* `0` = success ✅
+* `1` = file not found ❌
+* `2` = invalid usage ⚠
+
+**Examples:**
+
+```bash
+$ ls
+$ echo $?
+0
+
+$ ls notafile.txt
+ls: cannot access 'notafile.txt': No such file or directory
+$ echo $?
+1
+```
+
+---
+
+### 77. `echo $0`
+
+**Use:** Shows current shell or script name.
+
+**Examples:**
+
+```bash
+$ echo $0
+bash
+```
+
+If running inside a script `myscript.sh`:
+
+```bash
+$ bash myscript.sh
+$ echo $0
+myscript.sh
+```
+
+---
+
+## 📦 Software Installation
+
+### 78. `apt`
+
+**Use:** Package manager for Ubuntu/Debian.
+
+---
+
+### 79. `sudo apt update`
+
+**Use:** Refresh package list.
+
+```bash
+$ sudo apt update
+[sudo] password for omer:
+Hit:1 http://archive.ubuntu.com/ubuntu focal InRelease
+...
+```
+
+---
+
+### 80. `wget <link>`
+
+**Use:** Download files from internet.
+
+```bash
+$ wget http://example.com/app.zip
+```
+
+---
+
+### 81. `curl -O <link>`
+
+**Use:** Download file with curl.
+
+```bash
+$ curl -O http://example.com/app.zip
+```
+
+---
+
+### 82. `unzip filename.zip`
+
+**Use:** Extract zip archive.
+
+```bash
+$ unzip app.zip
+Archive:  app.zip
+ extracting: app/setup.sh
+```
+
+---
+
+### 83. `ls -l filename`
+
+**Use:** Shows file permissions.
+
+```bash
+$ ls -l citys.txt
+-rw-r--r-- 1 omer omer 14590 Sep  1 19:44 citys.txt
+```
+
+* `-` = file
+* `r` = read, `w` = write, `x` = execute
+* First group = owner, second = group, third = others
+
+---
+
+### 84. `cat /etc/passwd`
+
+**Use:** List all users on the system.
+
+**Example Output (shortened):**
+
+```
+root:x:0:0:root:/root:/bin/bash
+daemon:x:1:1:daemon:/usr/sbin:/usr/sbin/nologin
+omar:x:1000:1000:,,,:/home/omar:/bin/bash
+```
+
+---
+
+### 88. `sudo useradd -m -d /home/raju -s /bin/bash raju`
+
+**Use:** Create new user.
+
+* `-m` → create home dir
+* `-d` → specify home path
+* `-s` → specify shell
+
+```bash
+$ sudo useradd -m -d /home/raju -s /bin/bash raju
+$ sudo passwd raju
+Enter new UNIX password:
+```
+
+---
+
+### 89. `su username`
+
+**Use:** Switch to another user.
+
+```bash
+$ su raju
+Password:
+$ cd
+```
+
+---
+
+## 🔐 File Permissions
+
+* **r = 4 (read)**
+* **w = 2 (write)**
+* **x = 1 (execute)**
+
+3 types of users:
+
+* `u` = owner
+* `g` = group
+* `o` = others
+* `a` = all
+
+---
+
+### 90. `chmod u+rwx filename`
+
+**Use:** Give owner all permissions.
+
+```bash
+$ chmod u+rwx script.sh
+```
+
+---
+
+### 91. `chmod u-rwx filename`
+
+**Use:** Remove all permissions from owner.
+
+---
+
+### 92. `chmod ugo-rwx filename`
+
+**Use:** Remove all permissions from everyone.
+
+---
+
+### 93. `chmod a+rx filename`
+
+**Use:** Give read+execute to all.
+
+---
+
+### 94. `chmod a-rwx filename`
+
+**Use:** Remove all permissions from all users.
+
+---
+
+### 95. `chmod 777 filename`
+
+**Use:** Numeric mode. Everyone gets full access.
+
+```bash
+$ chmod 777 script.sh
+```
+
+Other examples:
+
+* `chmod 000 file` → no access ❌
+* `chmod 644 file` → owner read/write, others read only
+* `chmod 755 script.sh` → common for executables
+
+---
+
