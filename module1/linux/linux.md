@@ -1954,3 +1954,130 @@ Tips and cautions
   printf "%s\n" "${files[@]}"
   ```
 - If the command fails, the variable will be empty. Check exit codes when needed: `if output=$(cmd); then ... fi`
+
+# 101) free
+Shows system memory usage (RAM and swap). By default, units are KiB (kibibytes).
+
+Syntax
+```bash
+free
+```
+
+Typical output
+```
+              total        used        free      shared  buff/cache   available
+Mem:        16070768    2354120     1049828      321204    12666820    13028524
+Swap:        2097148           0     2097148
+```
+
+Columns (Mem:)
+- total: Physical RAM detected by the OS.
+- used: Memory used by processes + kernel buffers/cache.
+- free: Completely unused memory.
+- shared: Memory used by tmpfs/shmem (shared between processes).
+- buff/cache: Kernel buffers and page cache (reclaimable).
+- available: Best estimate of memory available for starting new apps without swapping (more useful than “free”).
+
+Notes
+- “used” includes cache; Linux will cache aggressively to speed up I/O.
+- “available” is the practical indicator of how much RAM you can still use.
+
+---
+
+# 102) free -m
+Same as free, but in MiB (mebibytes).
+
+Syntax
+```bash
+free -m
+```
+
+Typical output
+```
+              total        used        free      shared  buff/cache   available
+Mem:           1569         230          99          31        1239        1272
+Swap:          2047           0        2047
+```
+
+---
+
+# 103) free -g
+Same as free, but in GiB (gibibytes), rounded down to whole GiB (small values may show as 0).
+
+Syntax
+```bash
+free -g
+```
+
+Typical output
+```
+              total        used        free      shared  buff/cache   available
+Mem:             15           2           0           0          12          12
+Swap:             1           0           1
+```
+
+Tip
+- For more precise human-readable units, you can also use: free -h
+
+---
+
+# 104) df -h
+Shows disk filesystem usage. -h prints human‑readable units (K, M, G).
+
+Syntax
+```bash
+df -h
+```
+
+Typical output
+```
+Filesystem      Size  Used Avail Use% Mounted on
+/dev/nvme0n1p2  474G  120G  330G  27% /
+tmpfs           7.8G  2.3M  7.8G   1% /run
+/dev/nvme0n1p1  511M  6.1M  505M   2% /boot/efi
+tmpfs            16G   84M   16G   1% /dev/shm
+```
+
+Columns
+- Filesystem: Device or virtual FS.
+- Size/Used/Avail: Total, used, and available space.
+- Use%: Percent used.
+- Mounted on: Mount point.
+
+Tips
+- See filesystem type too: df -hT
+- Per mountpoint only: df -h /
+
+---
+
+# 105) free -m | grep "Mem"
+Filters the memory line (Mem:) from free -m output.
+
+Syntax
+```bash
+free -m | grep "Mem"
+```
+
+Typical output
+```
+Mem:           1569         230          99          31        1239        1272
+```
+
+Notes
+- This prints only the “Mem:” row in MiB units.
+- To extract specific fields programmatically, prefer awk:
+  ```bash
+  free -m | awk '/^Mem:/{printf "total=%s used=%s free=%s buff/cache=%s available=%s\n",$2,$3,$4,$6,$7}'
+  # total=1569 used=230 free=99 buff/cache=1239 available=1272
+  ```
+
+Quick reference
+- Memory (KiB): free
+- Memory (MiB): free -m
+- Memory (GiB): free -g
+- Disk usage (human): df -h
+- Just the memory row: free -m | grep "Mem"
+
+Key takeaway
+- For RAM health, rely on “available” rather than “free.”
+- For disks, check “Use%” on important mount points (/, /home, /var, etc.).
