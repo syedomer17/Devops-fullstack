@@ -2081,3 +2081,269 @@ Quick reference
 Key takeaway
 - For RAM health, rely on “available” rather than “free.”
 - For disks, check “Use%” on important mount points (/, /home, /var, etc.).
+
+# AWK in Linux: Deep Dive, Why and Where to Use It
+
+What is awk
+- awk is a small, powerful text-processing language optimized for scanning text files line-by-line, splitting lines into fields, matching patterns, and performing actions (print, sum, transform).
+- Think of it as a mini data-processing tool for logs, CSV/TSV, and columnar text, often replacing combinations of grep, cut, sed, and simple Python scripts.
+
+Why use awk
+- Fast one-liners for filtering, selecting columns, summarizing, grouping.
+- Works well in pipelines and over huge files.
+- Expressive “pattern { action }” model with built-in field/record logic.
+- Associative arrays make “group by” and counters trivial.
+
+Where it’s used
+- Log analysis (Apache/Nginx/system logs).
+- CSV/TSV parsing and reporting.
+- Summaries: sums, averages, histograms, unique counts.
+- Quick data reshaping: selecting/reordering columns, adding computed fields.
+- Simple joins/merges keyed by an ID.
+
+Core model
+- Input is read record-by-record (default: one record = one line).
+- Each record is split into fields ($1, $2, …, $NF). Entire line is $0.
+- A program is a sequence of pattern { action } rules.
+- If pattern matches the current record, run action.
+- Special blocks: BEGIN { … } runs before input; END { … } after input.
+
+Quick syntax
+```bash
+# Pattern-only: print lines where $3 > 100
+awk '$3 > 100' file
+
+# Pattern + action: print 1st and 3rd columns, separated by a tab
+awk '{ print $1, $3 }' OFS='\t' file
+
+# With field separator (FS)
+awk -F',' '{ print $1, $3 }' OFS=',' file.csv
+
+# With variables from shell
+awk -v threshold=100 '$3 > threshold { sum += $3 } END { print sum }' file
+```
+
+Running awk
+- Inline script: awk 'program' file1 file2 …
+- From file: awk -f script.awk input.txt
+- Common flags:
+  - -F 're' set input field separator (regex).
+  - -v name=value pass variables in.
+  - -f file.awk load script file.
+
+Patterns
+- Regex: /error/ matches if $0 contains “error”.
+- Relational: $3 > 100, $1 == "INFO"
+- Combined: $3 > 100 && $1 ~ /INFO/
+- Ranges: /BEGIN/,/END/ matches from first regex to next regex.
+- BEGIN { … } and END { … } for setup/teardown.
+
+Fields and separators
+- $0: whole record; $1..$NF: fields; NF: number of fields.
+- Default FS (field separator) is “any sequence of spaces/tabs”.
+- Set FS:
+  - -F',' for CSV-like.
+  - -F'[[:space:]]+' for 1+ whitespace.
+  - -v FS='|' for literal pipe.
+
+Advanced tokenizing (GNU awk)
+- FPAT: regex for what a “field” is (instead of what separates fields). Great for quoted CSV.
+```bash
+# FPAT to capture CSV fields honoring simple quotes
+awk -v FPAT='([^,]+)|(\"[^\"]*\")' '{ print $1, $2 }' file.csv
+```
+
+Output controls
+- print expr1, expr2 … writes fields separated by OFS (default space). End with ORS (default newline).
+- printf format, args… allows formatted output (no automatic newline).
+- OFS: output field sep; ORS: output record sep; OFMT: numeric format.
+
+Important built-in variables
+- NR: total record number across files; FNR: record number in current file.
+- NF: number of fields in current record; $NF: last field.
+- FILENAME: current file; ARGC/ARGV: command-line args.
+- RS: input record separator (default newline); ORS: output record separator.
+- FS: input field separator; OFS: output field separator.
+- IGNORECASE (gawk): case-insensitive matching if set to 1.
+- RSTART/RLENGTH: from match() results.
+
+Control flow
+```awk
+# if/else
+$3 > 100 { high++ } else { low++ }
+
+# while/for
+{ for (i=1; i<=NF; i++) sum[i]+=$i }
+
+# for-in (associative arrays)
+END { for (k in count) printf "%s\t%d\n", k, count[k] }
+```
+
+Associative arrays (hash maps)
+```awk
+# Count lines per status code (column 9) in access.log
+{ count[$9]++ }
+END { for (code in count) printf "%s\t%d\n", code, count[code] }
+```
+
+Key functions (selection)
+- String: length(s), substr(s,i,n), index(s,t), tolower(s), toupper(s).
+- Regex: match(s, r), sub(r, repl, s), gsub(r, repl, s); gensub(r, repl, n, s) [gawk].
+- Split/join: split(s, a, sep), sprintf(fmt, …).
+- Time (gawk): systime(), strftime(fmt, t), mktime("YYYY MM DD hh mm ss").
+- Arrays (gawk): asort(a, dest), asorti(a, dest) to sort by value or key.
+- Misc: system(cmd), getline to read from files/commands/stdin.
+
+I/O and pipelines
+```awk
+# Redirect to file (overwrite/append)
+{ print $1, $3 > "out.txt" }
+END { close("out.txt") }
+
+# Pipe to a command
+{ print $3 | "sort -n" }
+END { close("sort -n") }
+
+# Read from a command
+"date" | getline now; close("date")
+```
+
+Record handling
+- RS changes what counts as a “record”. Example: paragraph mode (blank-line separated):
+```bash
+awk 'BEGIN{ RS=""; FS="\n" } { print "Paragraph lines:", NF }' file
+```
+
+Common tasks and idioms
+- Select columns:
+```bash
+awk '{ print $1, $3 }' OFS='\t' file
+```
+
+- Filter rows:
+```bash
+awk '$5 == "ERROR" || /timeout/' logfile
+```
+
+- Sum a column:
+```bash
+awk '{ sum += $3 } END { print sum }' data
+```
+
+- Average and count:
+```bash
+awk '{ sum += $3; n++ } END { if (n) print sum/n }' data
+```
+
+- Group-by aggregate (like SQL GROUP BY):
+```bash
+# Sum sales per region (region in column 1, value in column 3)
+{ sales[$1] += $3 }
+END { for (r in sales) printf "%s\t%.2f\n", r, sales[r] }
+```
+
+- Unique values with counts (histogram):
+```bash
+{ freq[$2]++ }
+END { for (v in freq) print v, freq[v] }
+```
+
+- Top-N (needs external sort for simplicity):
+```bash
+{ freq[$1]++ }
+END {
+  for (k in freq) printf "%s\t%d\n", k, freq[k]
+} ' file | sort -k2,2nr | head -n 10
+```
+
+- Skip header:
+```bash
+NR==1 { next } { process... }
+```
+
+- CSV to different order (simple CSV, no embedded commas):
+```bash
+awk -F',' 'NR==1{ print "last,first" ; next } { print $2 "," $1 }' file.csv
+```
+
+- Replace text in a field:
+```bash
+awk '{ gsub(/-/, " ", $2); print $2 }' file
+```
+
+- Join two files by key (left join-ish)
+```bash
+# fileA: key valA
+# fileB: key valB
+# Build map from fileB, then stream fileA
+awk '
+  NR==FNR { b[$1]=$2; next }    # first pass over fileB
+  { print $1, $2, b[$1] }       # then fileA
+' fileB fileA
+```
+
+- Parse NGINX access log: count 5xx per path
+```bash
+# Assume: $7=path, $9=status
+awk '$9 ~ /^5/ { count[$7]++ }
+     END { for (p in count) printf "%s\t%d\n", p, count[p] }' access.log
+```
+
+Precision and human-readable output
+```bash
+awk '{ bytes+=$10 } END { printf "MB: %.2f\n", bytes/1024/1024 }' access.log
+```
+
+Passing variables from shell
+```bash
+threshold=100
+awk -v t="$threshold" '$3 > t' data
+```
+
+Comparison with grep/sed/cut
+- Use grep to match/print lines; awk can do that and more with conditions and field-based logic.
+- cut extracts fields by delimiter; awk extracts, computes, and formats.
+- sed edits streams; awk transforms with conditional logic and aggregates.
+
+GNU awk vs POSIX awk
+- gawk adds FPAT, gensub, asort/asorti, IGNORECASE, time functions, PROCINFO, patsplit, etc.
+- For portability (e.g., on minimal systems), stick to POSIX features; for convenience, prefer gawk where available.
+
+Performance tips
+- Use LC_ALL=C for faster regex/ordering if you don’t need locale sorting:
+  LC_ALL=C awk '…' file
+- Avoid unnecessary external commands inside tight loops.
+- Use -F'…' wisely; pre-set OFS/FS/RS in BEGIN for clarity.
+
+Common pitfalls
+- printf needs explicit newline: printf "%s\n", $1
+- Parsing “real CSV” with commas inside quotes requires FPAT or a CSV-aware tool.
+- $NF is handy; but if lines can be empty, check NF before referencing fields.
+- When using getline and pipes, close() the resource to flush and avoid descriptor limits.
+
+Mini cheat sheet (one-liners)
+```bash
+# Print 1st, 3rd fields tab-separated
+awk '{print $1, $3}' OFS='\t' file
+
+# Sum column 2
+awk '{s+=$2} END{print s}' file
+
+# Count unique in column 1
+awk '{c[$1]++} END{for(k in c) print k, c[k]}' file
+
+# Filter rows where column 4 > 100
+awk '$4>100' file
+
+# Reorder CSV first,last -> last,first (simple CSV)
+awk -F',' '{print $2","$1}' OFS=',' file.csv
+
+# Top 10 most frequent words
+tr -cs '[:alnum:]' '\n' < file | awk 'length{c[tolower($0)]++} END{for(k in c) print k,c[k]}' | sort -k2,2nr | head
+```
+
+Further practice ideas
+- Build a per-day summary from timestamps in logs.
+- Compute rolling averages per key.
+- Extract and normalize URLs, then rank by host/path.
+- Write a small AWK script file (with BEGIN/END) and run with -f.
