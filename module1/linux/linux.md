@@ -1705,3 +1705,252 @@ Other examples:
 
 ---
 
+# Linux Notes: userdel, groupadd, groupdel, chown + gpasswd
+
+Important: You do NOT need to reboot for any of these operations. File ownership changes are immediate; group membership changes apply when the user starts a new login session (log out/in or new shell). You can also use `newgrp GROUP` for a subshell with updated group.
+
+Quick reference
+- Delete user: `sudo userdel [-r] USER`
+- Create group: `sudo groupadd [-g GID] GROUP`
+- Delete group: `sudo groupdel GROUP`
+- Change file owner/group: `sudo chown USER:GROUP PATH`
+- Remove user from group: `sudo gpasswd -d USER GROUP`
+
+---
+
+## 96) Delete a user: `sudo userdel userName`
+
+What it does
+- Removes a local account from `/etc/passwd` (and `/etc/shadow`).
+- Optionally remove the user’s home directory and mail spool with `-r`.
+
+Syntax
+```bash
+sudo userdel USER
+sudo userdel -r USER   # also removes home dir and mail spool
+```
+
+Steps and checks
+```bash
+# 1) Verify the user exists
+getent passwd alice
+# alice:x:1001:1001:Alice,,,:/home/alice:/bin/bash
+
+# 2) Ensure the user isn't logged in or running processes
+ps -u alice            # list processes
+# or cleanly terminate:
+sudo loginctl terminate-user alice  # on systemd systems
+# as fallback:
+sudo pkill -u alice
+
+# 3) Delete the user (keep home dir)
+sudo userdel alice
+# (no output on success)
+
+# or delete the user AND home dir
+sudo userdel -r alice
+# (no output on success)
+
+# 4) Verify removal
+getent passwd alice
+# (no output if removed)
+```
+
+Typical errors
+```
+userdel: user 'alice' does not exist
+userdel: user alice is currently used by process 1234
+```
+Fix: stop/terminate their processes, then retry. Avoid `-f` unless you understand the risks.
+
+---
+
+## 97) Create a group: `sudo groupadd groupNAME`
+
+What it does
+- Creates a new group entry in `/etc/group`.
+
+Syntax
+```bash
+sudo groupadd developers
+sudo groupadd -g 1500 developers   # specify GID
+sudo groupadd -r devsvc            # system group (low GID range)
+```
+
+Steps and checks
+```bash
+# 1) Create group
+sudo groupadd developers
+# (no output on success)
+
+# 2) Verify
+getent group developers
+# developers:x:1002:
+```
+
+Typical errors
+```
+groupadd: group 'developers' already exists
+groupadd: GID '1500' already exists
+```
+
+---
+
+## 98) Delete a group: `sudo groupdel groupName`
+
+What it does
+- Removes a group from `/etc/group`.
+
+Syntax
+```bash
+sudo groupdel developers
+```
+
+Important
+- You cannot delete a group if it is the primary group of any user. Change those users’ primary group first:
+  ```bash
+  sudo usermod -g newprimary USER
+  ```
+
+Steps and checks
+```bash
+# 1) See who is in the group
+getent group developers
+# developers:x:1002:alice,bob
+
+# 2) Ensure no user uses it as primary GID
+getent passwd | awk -F: '$4==1002{print $1":"$4}'   # 1002 = GID for developers
+
+# 3) Delete group
+sudo groupdel developers
+# (no output on success)
+
+# 4) Verify
+getent group developers
+# (no output if removed)
+```
+
+Typical errors
+```
+groupdel: group 'developers' does not exist
+groupdel: cannot remove the primary group of user 'alice'
+```
+
+---
+
+## 99) Change file owner/group and adjust group membership
+
+A) Change file owner and group (chown)
+```bash
+# Before
+ls -l /srv/data/report.txt
+# -rw-r----- 1 root root 2048 Sep  3 12:34 /srv/data/report.txt
+
+# Change owner and group
+sudo chown alice:developers /srv/data/report.txt
+# (no output on success)
+
+# After
+ls -l /srv/data/report.txt
+# -rw-r----- 1 alice developers 2048 Sep  3 12:34 /srv/data/report.txt
+```
+
+Notes
+- Only owner: `sudo chown alice /srv/data/report.txt`
+- Only group: `sudo chown :developers /srv/data/report.txt`
+- Recursive: `sudo chown -R alice:developers /srv/data/dir`
+
+Common errors
+```
+chown: invalid group: 'alice:developers'         # group missing -> create it first
+chown: cannot access '/srv/data/report.txt': No such file or directory
+```
+
+B) Remove a user from a group (gpasswd -d)
+- No reboot needed. The user needs a new login session to see updated groups.
+```bash
+# Remove membership
+sudo gpasswd -d alice developers
+# Removing user alice from group developers
+
+# Verify (new session for alice)
+id alice
+# uid=1001(alice) gid=1001(alice) groups=1001(alice),27(sudo)
+groups alice
+# alice : alice sudo
+```
+
+Make group changes take effect
+- Ask the user to log out and back in, or:
+  ```bash
+  su - alice     # start a new login shell as alice
+  ```
+- Temporary subshell with a specific group:
+  ```bash
+  newgrp developers
+  ```
+
+# 100) Using command substitution to assign a command's output to a variable
+
+What this is
+- Command substitution runs a command and stores its output in a variable.
+- Recommended syntax: `VAR=$(command)` (modern, readable)
+- Legacy syntax: `` VAR=`command` `` (works, but harder to nest and read)
+
+Basic example (your case)
+```bash
+# Assign output of ls to a variable
+listoffiles=$(ls)        # recommended
+# or using legacy backticks (not preferred)
+listoffiles=`ls`
+
+# Print the variable
+echo "$listoffiles"
+```
+
+Notes
+- Always quote the variable when printing: `echo "$listoffiles"` to preserve newlines/spacing.
+- Unquoted `echo $listoffiles` will collapse newlines into spaces.
+- No spaces around = when assigning: `x=$(date)` is correct; `x = $(date)` is a syntax error.
+
+Step-by-step with typical outputs
+```bash
+# 1) See files (example)
+ls
+# Documents  notes.txt  script.sh
+
+# 2) Capture the output into a variable
+listoffiles=$(ls)
+
+# 3) Print it
+echo "$listoffiles"
+# Documents
+# notes.txt
+# script.sh
+```
+
+More examples
+```bash
+# Current date/time
+now=$(date)
+echo "$now"
+# Wed Sep  3 14:32:35 UTC 2025
+
+# Count files in current directory
+filecount=$(ls -1 | wc -l)
+echo "$filecount"
+# 3
+
+# Command substitution inline (no variable)
+echo "Kernel: $(uname -r)"
+# Kernel: 6.8.0-35-generic
+```
+
+Tips and cautions
+- Prefer `$(...)` over backticks `` `...` ``.
+- If you need to keep filenames safely (with spaces/newlines), prefer arrays over parsing ls:
+  ```bash
+  files=(*)               # Bash array of filenames
+  printf "%s\n" "${files[@]}"
+  ```
+- If the command fails, the variable will be empty. Check exit codes when needed: `if output=$(cmd); then ... fi`
