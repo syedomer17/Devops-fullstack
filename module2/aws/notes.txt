@@ -1,0 +1,26 @@
+1.what is cloud computing?
+cloud computing is the no demand devlivery of computer power.databases storage applications and other IT resources through a cloud services plateform via the internet with pay-as-you-go pricing.
+
+2.Befor cloud computing?
+cloud computing enables you to stop thinking of your infrastructur as harware and instent think of it and use it as software 
+
+hardware solution are physical. This means they require:
+1.space
+2.staff
+3.physical sercurity
+4.planning
+5.capital expenditure
+6.Is there is resource capacity
+7.do we have sufficient storage.
+
+3.software is flexible
+if your needs change your software can change much more quicky ,easilly 
+
+4.what are the cloud computing models 
+1.cloud computing models ref er  to the different wasy cloud 
+
+there are three types of cloud computing models
+1.saas
+2.laas
+3.Paas
+
