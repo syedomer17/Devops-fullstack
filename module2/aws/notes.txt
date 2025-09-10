@@ -24,3 +24,21 @@ there are three types of cloud computing models
 2.laas
 3.Paas
 
+three cloud deployment models 
+1.public cloud
+2.hybrid
+3.private
+
+benefits of cloud
+1.fast and easy infrastructur setup 
+2.it is very flexible and scaliable
+3.spin up server with one click
+4.spin of server with one click
+
+5.what is multi cloud?
+if you are using multi cloud like aws azure gcp etc.
+
+use cases for replication workload 
+hight avalibality
+
+aws is best for web apps gcp is best for big data 
