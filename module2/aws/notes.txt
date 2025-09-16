@@ -42,3 +42,19 @@ use cases for replication workload
 hight avalibality
 
 aws is best for web apps gcp is best for big data 
+
+every services there own dashboard and also it have more then 100+ instense
+
+1.check the instance types
+2.key pairs where you want to luanch the website in which region 
+in key pairs it have public and private key 
+
+ami is mandoatory (the os is must)
+
+
+add security groups 
+ssh and allow Anywhere
+http and allow Anywhere
+https and allow Anywhere
+
+1.install git bash in windows 
