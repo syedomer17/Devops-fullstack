@@ -1,12 +1,12 @@
 # AWS EC2 Bootstrap Script Guide
 
-This guide will walk you through launching an AWS EC2 instance and using a bootstrap (user data) script to automatically set up a web server. You’ll also find an explanation of what bootstrap scripts are, step-by-step instructions, and common interview questions with answers.
+This guide will walk you through launching an AWS EC2 instance and using a bootstrap (user data) script to automatically set up a web server. You’ll also find an explanation of what bootstrap scripts are, step-by-step instructions, an FAQ about editing the script after launch, and common interview questions with answers.
 
 ---
 
 ## What is an EC2 Bootstrap Script?
 
-A **bootstrap script** (also known as user data) is a shell script that runs automatically when an EC2 instance is first launched. It’s commonly used to install software, configure services, or set up the environment without needing manual intervention after the instance is running.
+A **bootstrap script** (also known as user data) is a shell script that runs automatically when an EC2 instance is first launched. It’s commonly used to install software, configure services, or set up the environment without manual intervention after the instance is running.
 
 ---
 
@@ -72,6 +72,22 @@ A **bootstrap script** (also known as user data) is a shell script that runs aut
 
 ---
 
+## Can I Edit the Bootstrap Script After Launch?
+
+**Yes, you can edit the user data script after launching your instance:**
+
+1. Go to the **EC2 Instances** list.
+2. Select (check the box of) the instance you want to edit.
+3. Click the **Actions** button.
+4. Choose **Instance settings** > **Edit user data**.
+5. Modify your script as needed and save.
+
+> **Important:**  
+> Even though you can edit the script, it will **not** run again automatically. The user data script is only executed once, at the very first launch of the instance.  
+> If you want your changes to run, you need to manually re-run the script inside your instance or take special steps to enable user data re-execution.
+
+---
+
 ## What Does the Script Do?
 
 - **Updates the package repository** to get the latest versions.
@@ -97,7 +113,7 @@ A **bootstrap script** (also known as user data) is a shell script that runs aut
 ---
 
 ### Q3: What happens if you change the user data script after launching the instance?
-**A:** By default, the user data script only runs at the first boot. Changing it afterward will not automatically rerun the script unless you manually trigger it or relaunch the instance.
+**A:** By default, the user data script only runs at the first boot. Editing the script after launch will **not** cause it to run again unless you manually trigger it or restart the instance in a way that re-runs user data.
 
 ---
 
