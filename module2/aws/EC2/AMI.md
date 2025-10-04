@@ -52,6 +52,28 @@ This guide explains how to move (replicate) your existing EC2 instance from one 
 
 ---
 
+## How to Delete an EC2 Instance or AMI
+
+### Delete an EC2 Instance
+
+1. Go to the **EC2 Dashboard** in the AWS Management Console.
+2. In the navigation pane, click **Instances**.
+3. Select the instance you want to delete (terminate).
+4. Click on **Instance state** > **Terminate instance**.
+5. Confirm the termination. The instance and its associated resources (except EBS volumes with "Delete on termination" disabled) will be deleted.
+
+### Delete an AMI
+
+1. Go to **EC2 Dashboard** > **AMIs** in the region where your AMI is located.
+2. Select the AMI you want to delete.
+3. Click **Actions** > **Deregister AMI**.
+4. (Optional) To free up storage, delete the associated EBS snapshots:
+    - Go to **Snapshots** in the EC2 Dashboard.
+    - Find and select the snapshots associated with the deregistered AMI.
+    - Click **Actions** > **Delete snapshot**.
+
+---
+
 ## Interview Questions & Answers
 
 ### Q1: How do you move an EC2 instance from one region to another?
@@ -88,4 +110,6 @@ Instance store volumes are ephemeral and do not persist when an AMI is created. 
 
 - [Copy an AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/CopyingAMIs.html)
 - [Launch an instance from an AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/launching-instance.html)
-
+- [Terminate Your Instance](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/terminating-instances.html)
+- [Deregister Your AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/deregister-ami.html)
+- [Delete EBS Snapshot](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ebs-deleting-snapshot.html)
