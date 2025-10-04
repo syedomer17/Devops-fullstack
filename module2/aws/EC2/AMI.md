@@ -88,3 +88,4 @@ Instance store volumes are ephemeral and do not persist when an AMI is created. 
 
 - [Copy an AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/CopyingAMIs.html)
 - [Launch an instance from an AMI](https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/launching-instance.html)
+
